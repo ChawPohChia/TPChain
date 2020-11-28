@@ -125,12 +125,10 @@ def getTransaction(tranHash):
 @cross_origin()
 def receiveTransaction():
     tx = request.form
-    print("From:" + tx['from'])
-    print("To:"   + tx['to'])
-    print("Value:"+ str(tx['value']))
-    print("fee: " + str(tx['fee']))
-    print("Date Created:" + tx['dateCreated'])
-
+    print("Data: " + tx['data'])
+    print("SenderPubKey: "   + tx['senderPubKey'])
+    print("TransactionDataHash: "+ str(tx['transactionDataHash']))
+    print("SenderSignature: " + str(tx['senderSignature']))
     return "200"
 
 
