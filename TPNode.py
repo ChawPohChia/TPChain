@@ -3,7 +3,8 @@ from Node import Node
 import sys
 import random
 import socket
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
+from http import HTTPStatus
 
 app = Flask(__name__)
 CORS(app)
@@ -120,6 +121,18 @@ def getTransaction(tranHash):
     tranInfo = "Transaction Hash:" + tranHash
     return tranInfo
 
+@app.route("/transactions/send", methods=['POST'])
+@cross_origin()
+def receiveTransaction():
+    tx = request.form
+    print("From:" + tx['from'])
+    print("To:"   + tx['to'])
+    print("Value:"+ str(tx['value']))
+    print("fee: " + str(tx['fee']))
+    print("Date Created:" + tx['dateCreated'])
+
+    return "200"
+
 
 @app.route("/balances")
 def getBalances():
@@ -154,7 +167,8 @@ if __name__ == "__main__":
         nodeID = "xxxx001"
         nodePort=random.randint(1000, 9999)
         """
-    nodePort = random.randint(1000, 9999)
+    #nodePort = random.randint(1000, 9999)
+    nodePort = 1234
     nodeID = "xxxx"+str(nodePort)
     nodeURL= "127.0.0.1:"+str(nodePort);
     runningNode = Node(nodeID, nodeURL)
