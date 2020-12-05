@@ -11,7 +11,8 @@ class Transaction:
         self.senderPubKey = senderPubKey
         self.transactionDataHash = transactionDataHash
         self.senderSignature = senderSignature
-        self.MinedInBlockIndex = None
+        self.MinedInBlockIndex = -2  #-2, means in initial unprocessed stage
+                                       #-1, means in block mining and pending for mining results.
         self.transferSuccessful = False
 
     def setTransferSuccessful(self, transferSuccessful):

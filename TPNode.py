@@ -134,6 +134,7 @@ def receiveTransaction():
     # SenderSignature: 48, 68, 2, 32, 17, 222, 44, 1, 98, 161, 16, 33, 52, 31, 54, 11, 129, 235, 136, 253, 23, 40, 8, 224, 153, 93, 194, 211, 215, 185, 208, 67, 174, 101, 182, 48, 2, 32, 68, 113, 81, 75, 48, 174, 101, 44, 96, 241, 9, 19, 138, 68, 248, 202, 149, 213, 86, 11, 63, 234, 134, 189, 17, 178, 116, 54, 94, 86, 161, 127
     # DER encoding of an ECDSA signature: 70 bytes insides
     receivedTransaction= Transaction(tx['data'], tx['senderPubKey'], tx['transactionDataHash'], tx['senderSignature'])
+    runningNode.Chain.addTransaction(receivedTransaction)
     #print("Data: " + tx['data'])
     #print("SenderPubKey: "   + tx['senderPubKey'])
     #print("TransactionDataHash: "+ str(tx['transactionDataHash']))
@@ -167,6 +168,8 @@ def getPeers():
 
 #let user set the nodeID and port while running the node
 if __name__ == "__main__":
+
+
     """
     if len(sys.argv) == 2:
         nodeID = sys.argv[1]
