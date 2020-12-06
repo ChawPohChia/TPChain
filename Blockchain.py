@@ -16,7 +16,7 @@ class Blockchain:
 
     def generateGenesisBlock(self):
         #def __init__(self, index, transactions, prevBlockHash, difficulty):
-        genesisBlock = Block(0, None, None, None)
+        genesisBlock = Block(index=0)
         self.blocks.append(genesisBlock)
         self.lastblock=genesisBlock
 
@@ -28,8 +28,8 @@ class Blockchain:
             prevBlockHash = self.lastblock.blockHash
             # (self, index, transactions, prevBlockHash):
             blockToMine = Block(nextBlockindex, transactionsInBlock, prevBlockHash, self.currentDifficulty)
-            self.miningJob.append(blockToMine)
+            self.miningJob = blockToMine
             self.pendingTransactions = []  # clear up pending transaction after txs are included in prevBlockHash the block.
-        else:
-            return self.miningJob;
+
+        return (self.miningJob.index, self.miningJob.blockString);
 

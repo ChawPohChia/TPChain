@@ -90,6 +90,13 @@ def getMinerDifficulty(minerAddress, difficulty):
     minerDifficulty = "Miner at address " + minerAddress + " difficulty is " + difficulty
     return minerDifficulty
 
+@app.route("/mining/get-mining-job")
+def getMiningJob():
+    tx = request.values['Miner']
+    minerAddress= tx
+    print("Mining request comes in, "+minerAddress+" request for a job." )
+    return runningNode.Chain.getMiningJob()
+
 
 @app.route("/blocks")
 def getBlocks():
@@ -168,8 +175,6 @@ def getPeers():
 
 #let user set the nodeID and port while running the node
 if __name__ == "__main__":
-
-
     """
     if len(sys.argv) == 2:
         nodeID = sys.argv[1]
