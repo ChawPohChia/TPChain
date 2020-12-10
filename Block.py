@@ -13,8 +13,7 @@ import json
 
 class Block:
     #For miner program will only take in blockHash input.
-    def __init__(self, index=None, transactions=None, prevBlockHash=None, difficulty=None, blockString=
-                 None):
+    def __init__(self, index=None, transactions=None, prevBlockHash=None, difficulty=None):
         self.dateCreated = time.time()
         self.difficulty = difficulty
 
@@ -22,26 +21,27 @@ class Block:
         self.transactions = transactions
         self.prevBlockHash = prevBlockHash
 
+        self.nonce = 0
+        self.minedBy = None;  # to be filled in by miner
+        self.blockHash = None;  # to be filled in by miner
+
         #blockData = json.dumps(self.transactions, default=obj_dict)  [ob.__dict__ for ob in list_name]
         if (index==0):
             blockData=""
+            self.prevBlockHash = ""
         else:
             blockData = json.dumps([ob.__dict__ for ob in self.transactions])
+
         self.blockDataHash = sha256(blockData.encode()).hexdigest()
+        self.blockString=   (str(self.dateCreated)+\
+                                         str(self.difficulty)+\
+                                         str(self.index)+ \
+                                         self.prevBlockHash+\
+                                         self.blockDataHash)
 
-        if (index!=0 & (blockString is None)):
-            self.block_string=  (self.dateCreated+\
-                                self.difficulty+\
-                                self.index+ \
-                                self.prevBlockHash+\
-                                self.blockDataHash)
-        else:
-            self.blockString=blockString
 
-        self.nonce = 0
-        self.minedBy=None;      # to be filled in by miner
-        self.blockHash = None;  # to be filled in by miner
 
+'''      
     def mine(self):
         blockHash=sha256((self.block_string+self.nonce).encode()).hexdigest()
         while not blockHash.startswith('0' * self.difficulty):
@@ -56,3 +56,4 @@ class Block:
         else:
             print("Block nonce: " + self.nonce +" is INCORRECT for this block, please try to mine again")
         return (blockHash.startswith('0' * self.difficulty))
+'''

@@ -6,6 +6,7 @@ import socket
 from flask_cors import CORS, cross_origin
 from http import HTTPStatus
 from Transaction import Transaction
+from flask import jsonify
 
 app = Flask(__name__)
 CORS(app)
@@ -95,7 +96,8 @@ def getMiningJob():
     tx = request.values['Miner']
     minerAddress= tx
     print("Mining request comes in, "+minerAddress+" request for a job." )
-    return runningNode.Chain.getMiningJob()
+    miningJob=runningNode.Chain.getMiningJob()
+    return miningJob
 
 
 @app.route("/blocks")
@@ -121,7 +123,6 @@ def getPendingTransaction():
 def getConfirmedTransaction():
     confirmedTransactions = "This is confirmed transactions results."
     return confirmedTransactions
-
 
 @app.route("/transactions/<tranHash>")
 def getTransaction(tranHash):
