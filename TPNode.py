@@ -99,6 +99,15 @@ def getMiningJob():
     miningJob=runningNode.Chain.getMiningJob()
     return miningJob
 
+@app.route("/mining/submit-mined-block", methods=['POST'])
+@cross_origin()
+def receiveMinedBlock(): # minedBlock={'MinedBy':MinerIP,"Blockindex":miningDict["Index"], "MinedNonce":str(mining.nonce)}
+    MinedBy = request.values["MinedBy"]
+    BlockIndex = request.values["Blockindex"]
+    MinedNonce = request.values["MinedNonce"]
+    print("Miner: " + MinedBy)
+    #print("Veriying mined block with index: "+minedBlock["Index"])
+
 
 @app.route("/blocks")
 def getBlocks():
