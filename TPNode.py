@@ -103,10 +103,10 @@ def getMiningJob():
 @cross_origin()
 def receiveMinedBlock(): # minedBlock={'MinedBy':MinerIP,"Blockindex":miningDict["Index"], "MinedNonce":str(mining.nonce)}
     MinedBy = request.values["MinedBy"]
-    BlockIndex = request.values["Blockindex"]
+    BlockIndex = int(request.values["Blockindex"]) #request change this value to string, need to change back to int
     MinedNonce = request.values["MinedNonce"]
-    print("Miner: " + MinedBy)
-    #print("Veriying mined block with index: "+minedBlock["Index"])
+    accepted, msg = runningNode.Chain.verifyAndSubmitBlock(BlockIndex,MinedNonce, MinedBy)
+    return {"accepted":accepted,"message":msg}
 
 
 @app.route("/blocks")

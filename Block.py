@@ -49,11 +49,5 @@ class Block:
             blockHash = sha256((self.block_string + self.nonce).encode()).hexdigest()
         self.blockHash=blockHash;
 
-    def verifyBlockHash(self):
-        blockHash = sha256((self.block_string + self.nonce).encode()).hexdigest()
-        if (blockHash.startswith('0' * self.difficulty)):
-            print("Block is verified! Block was mined successfull with nonce: "+self.nonce)
-        else:
-            print("Block nonce: " + self.nonce +" is INCORRECT for this block, please try to mine again")
-        return (blockHash.startswith('0' * self.difficulty))
+
 '''
