@@ -1,7 +1,7 @@
 from Block import Block
 import copy
 from hashlib import sha256
-from TPChainUtilities import getBlockHash, verifyBlockHash
+from TPChainUtilities import getBlockHash, verifyBlockHash, strToDatetime
 
 class Blockchain:
 
@@ -11,12 +11,22 @@ class Blockchain:
         self.miningJob = None
         self.pendingTransactions=[]
         self.Difficulty = 3
+        self.accounts={}
         self.generateGenesisBlock()
 
+
     def addTransaction(self, transaction):
-        self.pendingTransactions.append(transaction)
+        txVerified = self.verifyTransaction(transaction)
+        if(txVerified):
+            self.pendingTransactions.append(transaction)
+
+    def verifyTransaction(self, transaction):
+        print("verifying transactions...")
+        return True;
 
     def generateGenesisBlock(self):
+        self.blocks = {} #Clear all blocks while regenerate genesis block
+        self.accounts = {} #Clear all accounts while regenerate genesis block
         #def __init__(self, index, transactions, prevBlockHash, difficulty):
         genesisBlock = Block(index=0, transactions="",prevBlockHash="",difficulty=self.Difficulty)
         #Self-mining of genesis block
@@ -31,15 +41,32 @@ class Blockchain:
         genesisBlock.blockHash = blockHash;
         print("Nonce found for genesis block: " + str(genesisBlock.nonce))
         print("Blockhash: " + genesisBlock.blockHash)
-
         self.blocks.update({0:genesisBlock})
         self.lastblock=genesisBlock
 
+    def getSingleAddressOldestTransactionOnly(self, pendingTransactions):
+        uniqueTransactions = []
+        for ptx in pendingTransactions:
+            toSkip = False;
+            for element in pendingTransactions:
+                print(ptx.data)
+                print(element.data)
+                if ((ptx.data["from"] == element.data["from"]) & (
+                        strToDatetime(ptx.data["dateCreated"]) > strToDatetime(element.data["dateCreated"]))):
+                    toSkip = True;
+            if (not toSkip):
+                uniqueTransactions.append(ptx)
+
+        for tx in uniqueTransactions:
+            pendingTransactions.remove(tx)
+
+        return uniqueTransactions
 
     def createMiningJob(self):
         # Let miner to get the blocktomine, only start next block when the current job/block mined
         if ((self.miningJob == None) & (len(self.pendingTransactions)!=0)):
-            transactionsInBlock = copy.deepcopy(self.pendingTransactions)
+            transactionsInBlock = self.getSingleAddressOldestTransactionOnly(self.pendingTransactions) ## Very important! While copy job as preparation for txs,
+                                                                                                       ##      only one unique to-address in each txs in block
             nextBlockindex = self.lastblock.index + 1
             prevBlockHash = self.lastblock.blockHash
             # (self, index, transactions, prevBlockHash):

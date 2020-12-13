@@ -12,7 +12,7 @@ class Transaction:
         self.transactionDataHash = transactionDataHash
         self.senderSignature = senderSignature
         self.MinedInBlockIndex = -2  #-2, means in initial unprocessed stage
-                                       #-1, means in block mining and pending for mining results.
+                                    #-1, means in block mining and pending for mining results.
         self.transferSuccessful = False
 
     def setTransferSuccessful(self, transferSuccessful):
