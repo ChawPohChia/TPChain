@@ -7,6 +7,7 @@ from flask_cors import CORS, cross_origin
 from http import HTTPStatus
 from Transaction import Transaction
 from flask import jsonify
+import json
 
 app = Flask(__name__)
 CORS(app)
@@ -51,7 +52,7 @@ def debugNode():
                                                                                       "pendingTransactions": [],
                                                                                       "currentDifficulty": 5,
                                                                                       "miningJobs": {}},
-                          "chainId": "c6da93eb4249cb5ff4f9da36e2a7f8d0d61999221ed6910180948153e71cc47f"},
+                          "chainId": "c6da93eb4249cb5ff4f9da36e2a7f8d021.00d61999221ed6910180948153e71cc47f"},
                  "config": {"defaultServerHost": "localhost", "defaultServerPort": 5555,
                             "faucetPrivateKey": "838ff8634c41ba62467cc874ca156830ba55efe3e41ceeeeae5f3e77238f4eef",
                             "faucetPublicKey": "8c4431db61e9095d5794ff53a3ae4171c766cadef015f2e11bec22b98a80f74a0",
@@ -150,7 +151,9 @@ def receiveTransaction():
     #TransactionDataHash: �`���o�B�_Q��:-_J�g q > J�7�Gh"
     # SenderSignature: 48, 68, 2, 32, 17, 222, 44, 1, 98, 161, 16, 33, 52, 31, 54, 11, 129, 235, 136, 253, 23, 40, 8, 224, 153, 93, 194, 211, 215, 185, 208, 67, 174, 101, 182, 48, 2, 32, 68, 113, 81, 75, 48, 174, 101, 44, 96, 241, 9, 19, 138, 68, 248, 202, 149, 213, 86, 11, 63, 234, 134, 189, 17, 178, 116, 54, 94, 86, 161, 127
     # DER encoding of an ECDSA signature: 70 bytes insides
-    receivedTransaction= Transaction(tx['data'], tx['senderPubKey'], tx['transactionDataHash'], tx['senderSignature'])
+
+    data = json.loads(tx['data'])
+    receivedTransaction= Transaction(data, tx['senderPubKey'], tx['transactionDataHash'], tx['senderSignature'])
     runningNode.Chain.addTransaction(receivedTransaction)
     #print("Data: " + tx['data'])
     #print("SenderPubKey: "   + tx['senderPubKey'])
@@ -194,7 +197,7 @@ if __name__ == "__main__":
         nodePort=random.randint(1000, 9999)
         """
     #nodePort = random.randint(1000, 9999)
-    nodePort = 1234
+    nodePort = 1235
     nodeID = "xxxx"+str(nodePort)
     nodeURL= "127.0.0.1:"+str(nodePort);
     runningNode = Node(nodeID, nodeURL)
