@@ -1,6 +1,8 @@
 
 __pycache__/
 
+.idea/*
+
 venv/bin/f2py
 
 venv/bin/f2py3
