@@ -49,10 +49,7 @@ class Blockchain:
         for ptx in pendingTransactions:
             toSkip = False;
             for element in pendingTransactions:
-                print(ptx.data)
-                print(element.data)
-                if ((ptx.data["from"] == element.data["from"]) & (
-                        strToDatetime(ptx.data["dateCreated"]) > strToDatetime(element.data["dateCreated"]))):
+                if ((ptx.data["from"] == element.data["from"]) & (strToDatetime(ptx.data["dateCreated"]) > strToDatetime(element.data["dateCreated"]))):
                     toSkip = True;
             if (not toSkip):
                 uniqueTransactions.append(ptx)
@@ -69,10 +66,8 @@ class Blockchain:
                                                                                                        ##      only one unique to-address in each txs in block
             nextBlockindex = self.lastblock.index + 1
             prevBlockHash = self.lastblock.blockHash
-            # (self, index, transactions, prevBlockHash):
             blockToMine = Block(nextBlockindex, transactionsInBlock, prevBlockHash, self.Difficulty)
             self.miningJob = blockToMine
-            self.pendingTransactions = []  # clear up pending transaction after txs are included in prevBlockHash the block.
 
     def getMiningJob(self):
         #Let miner to get the blocktomine, only start next block when the current job/block mined
