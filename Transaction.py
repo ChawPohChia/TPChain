@@ -20,4 +20,7 @@ class Transaction:
 
     def setMinedInBlockIndex (self, minedBlockIndex ):
         self.MinedInBlockIndex  = minedBlockIndex
+        
+    def getStatus(self):
+        return self.transferSuccessful
 

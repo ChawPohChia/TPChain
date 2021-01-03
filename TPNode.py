@@ -112,8 +112,8 @@ def receiveMinedBlock(): # minedBlock={'MinedBy':MinerIP,"Blockindex":miningDict
 
 @app.route("/blocks")
 def getBlocks():
-    blocksInfo = {"message": "The chain was reset to its genesis block"}
-    return blocksInfo
+    #blocksInfo = {"message": "The chain was reset to its genesis block"}
+    return runningNode.Chain.
 
 
 @app.route("/blocks/<id>")
@@ -197,7 +197,7 @@ if __name__ == "__main__":
         nodePort=random.randint(1000, 9999)
         """
     #nodePort = random.randint(1000, 9999)
-    nodePort = 1235
+    nodePort = 1234
     nodeID = "xxxx"+str(nodePort)
     nodeURL= "127.0.0.1:"+str(nodePort);
     runningNode = Node(nodeID, nodeURL)

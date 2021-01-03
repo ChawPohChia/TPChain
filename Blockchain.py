@@ -90,8 +90,12 @@ class Blockchain:
             self.blocks.update({index: self.miningJob}) # Persist block to blocks
             self.lastblock = self.miningJob  # Update last block
             self.miningJob = None  # Clear up the job after persist to blocks
-            ## Need to update the transactions status also - WIP...
+            ## Need to update the transactions status also - WIP...\
+            
+            #need to update status of the transaction here
+            
             self.createMiningJob() #Create mining job immediately after mining done.
+            
             return True, "Congrats! Your mined block has been accepted!" #WIP: Need to pay mining fee for miner here/
 
 

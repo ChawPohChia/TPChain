@@ -58,6 +58,29 @@ for tx in TransToProcess:
    pendingTransactions.remove(tx)
 """
 
+#test2
+t1=Transaction(data={"from":"1Nh1qKQQ7q8Etsu5QndtQUkDHk5oiv8zKr","to":"XxnoCyJMtY323Y7mG6ePWtAmCoTH7KGqxX","value":100000,"fee":100,"dateCreated":"2020-12-13 18:27:34"}, senderPubKey="", transactionDataHash="",senderSignature="")
+t2=Transaction(data={"from":"2Nh1qKQQ7q8Etsu5QndtQUkDHk5oiv8zKr","to":"XxnoCyJMtY323Y7mG6ePWtAmCoTH7KGqxX","value":100000,"fee":100,"dateCreated":"2020-12-13 17:27:34"}, senderPubKey="", transactionDataHash="",senderSignature="")
+t3=Transaction(data={"from":"3Nh1qKQQ7q8Etsu5QndtQUkDHk5oiv8zKr","to":"XxnoCyJMtY323Y7mG6ePWtAmCoTH7KGqxX","value":100000,"fee":100,"dateCreated":"2020-12-13 16:27:34"}, senderPubKey="", transactionDataHash="",senderSignature="")
+t4=Transaction(data={"from":"4Nh1qKQQ7q8Etsu5QndtQUkDHk5oiv8zKr","to":"XxnoCyJMtY323Y7mG6ePWtAmCoTH7KGqxX","value":100000,"fee":100,"dateCreated":"2020-12-13 17:27:34"}, senderPubKey="", transactionDataHash="",senderSignature="")
+t5=Transaction(data={"from":"4Nh1qKQQ7q8Etsu5QndtQUkDHk5oiv8zKr","to":"XxnoCyJMtY323Y7mG6ePWtAmCoTH7KGqxX","value":100000,"fee":100,"dateCreated":"2020-12-13 16:27:34"}, senderPubKey="", transactionDataHash="",senderSignature="")
+t6=Transaction(data={"from":"4Nh1qKQQ7q8Etsu5QndtQUkDHk5oiv8zKr","to":"XxnoCyJMtY323Y7mG6ePWtAmCoTH7KGqxX","value":100000,"fee":100,"dateCreated":"2020-12-13 12:27:34"}, senderPubKey="", transactionDataHash="",senderSignature="")
+t7=Transaction(data={"from":"2Nh1qKQQ7q8Etsu5QndtQUkDHk5oiv8zKr","to":"XxnoCyJMtY323Y7mG6ePWtAmCoTH7KGqxX","value":100000,"fee":100,"dateCreated":"2020-11-13 13:27:34"}, senderPubKey="", transactionDataHash="",senderSignature="")
+
+pendingTransactions=[t1,t2,t3,t4,t5, t6, t7]
+allTransactions=[t1,t2,t3,t4,t5, t6, t7]
+
+t2.setTransferSuccessful(True)
+
+print("AllTransaction")
+for ptx in allTransactions:
+    print(ptx.getStatus())
+
+print("PendingTransaction")
+for ptx in pendingTransactions:
+    print(ptx.getStatus())
+
+
 
 
 
