@@ -109,13 +109,6 @@ def receiveMinedBlock(): # minedBlock={'MinedBy':MinerIP,"Blockindex":miningDict
     accepted, msg = runningNode.Chain.verifyAndSubmitBlock(BlockIndex,MinedNonce, MinedBy)
     return {"accepted":accepted,"message":msg}
 
-
-@app.route("/blocks")
-def getBlocks():
-    #blocksInfo = {"message": "The chain was reset to its genesis block"}
-    return runningNode.Chain.
-
-
 @app.route("/blocks/<id>")
 def getBlockWithID(id):
     print("Retriving Block info with Id:" + id)

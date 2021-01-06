@@ -11,16 +11,12 @@ class Transaction:
         self.senderPubKey = senderPubKey
         self.transactionDataHash = transactionDataHash
         self.senderSignature = senderSignature
-        self.MinedInBlockIndex = -2  #-2, means in initial unprocessed stage
-                                    #-1, means in block mining and pending for mining results.
-        self.transferSuccessful = False
+        self.MinedInBlockIndex = -2  #-2, means in pending stage
+                                     #-1, means rejected
+                                     #0, in genesis block
+                                     #1 onwards.. in other blocks
 
-    def setTransferSuccessful(self, transferSuccessful):
-        self.transferSuccessful = transferSuccessful
-
-    def setMinedInBlockIndex (self, minedBlockIndex ):
+    def setBlockIndex (self, minedBlockIndex ):
         self.MinedInBlockIndex  = minedBlockIndex
-        
-    def getStatus(self):
-        return self.transferSuccessful
+
 
