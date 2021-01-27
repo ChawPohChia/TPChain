@@ -15,8 +15,10 @@ class Transaction:
                                      #-1, means rejected
                                      #0, in genesis block
                                      #1 onwards.. in other blocks
+        self.remarks = ""
 
-    def setBlockIndex (self, minedBlockIndex ):
+    def setBlockIndexRemarks (self, minedBlockIndex, remarks ):
         self.MinedInBlockIndex  = minedBlockIndex
+        self.remarks = remarks
 
 

@@ -6,22 +6,54 @@ from TPChainUtilities import getBlockHash, verifyBlockHash, strToDatetime
 class Blockchain:
 
     def __init__(self):
+        self.Difficulty = 3
+        self.TotalTPCoin = 1000000
+        self.TPFoundationWalletAddress="1AzKmHdg6j8jPA8sNpxc2z7BMsKLCXRp6L"
+        self.FaucetAddress = "1EmQd4rXvNEoWLKRNSdnb2GP9i5VQwuaEM"
+
         self.blocks = {}
         self.lastblock=None
         self.miningJob = None
-        self.pendingTransactions=[]
-        self.Difficulty = 3
-        self.accounts={}
+
+        self.rejectedTransactions = []  # Transaction with blockindex=-3
+        self.pendingTransactions=[]     #Transaction with blockindex=-2
+        self.inProcessTransactions = []  #Transaction with blockindex=-1
+        self.completedTransactions = [] #Transaction with blockindex>0
+
+        self.balances={}
         self.generateGenesisBlock()
+        self.runInitialCoinDistribution()
+
+    def runInitialCoinDistribution(self):
+        coinForTPFoundation = 500000 #(50%)
+        coinForFaucet = 100000 #(10%)
+
+        #WIP: The followings Should implement transaction mechanism
+        self.TotalTPCoin -= coinForFaucet
+        self.balances["1EmQd4rXvNEoWLKRNSdnb2GP9i5VQwuaEM"]=coinForFaucet
+        self.TotalTPCoin -= coinForTPFoundation
+        self.balances["1AzKmHdg6j8jPA8sNpxc2z7BMsKLCXRp6L"]=coinForTPFoundation
 
 
     def addTransaction(self, transaction):
         txVerified = self.verifyTransaction(transaction)
         if(txVerified):
+            print("Transaction is added in PendingTransaction collection.")
             self.pendingTransactions.append(transaction)
+        else:
+            print("Transaction is added in rejectedTransaction collection.")
+            self.rejectedTransactions.append(transaction)
 
     def verifyTransaction(self, transaction):
-        print("verifying transactions...")
+        #data: {"from": "1Asq3p1PdSW39sRWSceiPDP5uTmrYawESW", "to": "XxnoCyJMtY323Y7mG6ePWtAmCoTH7KGqxX",
+        #       "value": 100000,
+        #       "fee": 100, "dateCreated": "2020-12-1 16:4:38"}
+        if (transaction.data["from"] not in self.balances.keys()):
+            transaction.setBlockIndexRemarks(-3,"Account is not found!")
+            return False;
+        if(self.balances[transaction.data["from"]]<int(transaction.data["value"])):
+            transaction.setBlockIndexRemarks(-3,"Insufficient fund")
+            return False;
         return True;
 
     def generateGenesisBlock(self):
@@ -44,29 +76,31 @@ class Blockchain:
         self.blocks.update({0:genesisBlock})
         self.lastblock=genesisBlock
 
-    def getSingleAddressOldestTransactionOnly(self, pendingTransactions):
+    def getSingleAddressOldestTransactionOnlyIntoInProcessList(self):
         uniqueTransactions = []
-        for ptx in pendingTransactions:
+        for ptx in self.pendingTransactions:
             toSkip = False;
-            for element in pendingTransactions:
+            for element in self.pendingTransactions:
                 if ((ptx.data["from"] == element.data["from"]) & (strToDatetime(ptx.data["dateCreated"]) > strToDatetime(element.data["dateCreated"]))):
                     toSkip = True;
             if (not toSkip):
                 uniqueTransactions.append(ptx)
 
         for tx in uniqueTransactions:
-            pendingTransactions.remove(tx)
+            tx.setBlockIndexRemarks(-1,"")
+            self.inProcessTransactions.append(tx)
+            self.pendingTransactions.remove(tx)
 
         return uniqueTransactions
 
     def createMiningJob(self):
         # Let miner to get the blocktomine, only start next block when the current job/block mined
         if ((self.miningJob == None) & (len(self.pendingTransactions)!=0)):
-            transactionsInBlock = self.getSingleAddressOldestTransactionOnly(self.pendingTransactions) ## Very important! While copy job as preparation for txs,
-                                                                                                       ##      only one unique to-address in each txs in block
+            self.getSingleAddressOldestTransactionOnlyIntoInProcessList() ## Very important! While copy job as preparation for txs,
+                                                                                                                  ##      only one unique to-address in each txs in block
             nextBlockindex = self.lastblock.index + 1
             prevBlockHash = self.lastblock.blockHash
-            blockToMine = Block(nextBlockindex, transactionsInBlock, prevBlockHash, self.Difficulty)
+            blockToMine = Block(nextBlockindex, self.inProcessTransactions, prevBlockHash, self.Difficulty)
             self.miningJob = blockToMine
 
     def getMiningJob(self):
@@ -89,11 +123,16 @@ class Blockchain:
             self.miningJob.blockHash = blockHash
             self.blocks.update({index: self.miningJob}) # Persist block to blocks
             self.lastblock = self.miningJob  # Update last block
+
+            # Update transaction index/status
+            for tx in self.miningJob.transactions:
+                tx.setBlockIndexRemarks(self.miningJob.index,"Mined in Block "+ str(self.miningJob.index))
+                self.inProcessTransactions.remove(tx)
+                self.completedTransactions.append(tx)
+
+            
+
             self.miningJob = None  # Clear up the job after persist to blocks
-            ## Need to update the transactions status also - WIP...\
-            
-            #need to update status of the transaction here
-            
             self.createMiningJob() #Create mining job immediately after mining done.
             
             return True, "Congrats! Your mined block has been accepted!" #WIP: Need to pay mining fee for miner here/
