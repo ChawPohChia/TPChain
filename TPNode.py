@@ -118,9 +118,23 @@ def getBlockWithID(id):
 
 @app.route("/transactions/pending")
 def getPendingTransaction():
-    pendingTransactions = "This is pending transactions results."
-    return pendingTransactions
+    pendingTransactionsJson = json.dumps([ob.__dict__ for ob in runningNode.Chain.pendingTransactions])    
+    return pendingTransactionsJson
 
+@app.route("/transactions/inprocess")
+def getInProcessTransaction():
+    inProcessTransactionsJson = json.dumps([ob.__dict__ for ob in runningNode.Chain.inProcessTransactions])
+    return inProcessTransactionsJson
+
+@app.route("/transactions/completed")
+def getCompletedTransaction():
+    completedTransactionsJson = json.dumps([ob.__dict__ for ob in runningNode.Chain.completedTransactions])
+    return completedTransactionsJson
+
+@app.route("/transactions/rejected")
+def getRejectedTransaction():
+    rejectedTransactionsJson = json.dumps([ob.__dict__ for ob in runningNode.Chain.rejectedTransactions])
+    return rejectedTransactionsJson
 
 @app.route("/transactions/confirmed")
 def getConfirmedTransaction():
