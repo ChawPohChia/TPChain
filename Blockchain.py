@@ -96,11 +96,11 @@ class Blockchain:
     def createMiningJob(self):
         # Let miner to get the blocktomine, only start next block when the current job/block mined
         if ((self.miningJob == None) & (len(self.pendingTransactions)!=0)):
-            self.getSingleAddressOldestTransactionOnlyIntoInProcessList() ## Very important! While copy job as preparation for txs,
+            miningJobTransactions=self.getSingleAddressOldestTransactionOnlyIntoInProcessList() ## Very important! While copy job as preparation for txs,
                                                                                                                   ##      only one unique to-address in each txs in block
             nextBlockindex = self.lastblock.index + 1
             prevBlockHash = self.lastblock.blockHash
-            blockToMine = Block(nextBlockindex, self.inProcessTransactions, prevBlockHash, self.Difficulty)
+            blockToMine = Block(nextBlockindex, miningJobTransactions, prevBlockHash, self.Difficulty)
             self.miningJob = blockToMine
 
     def getMiningJob(self):
@@ -121,16 +121,15 @@ class Blockchain:
             self.miningJob.nonce=nonce
             self.miningJob.minedBy = miner
             self.miningJob.blockHash = blockHash
-            self.blocks.update({index: self.miningJob}) # Persist block to blocks
-            self.lastblock = self.miningJob  # Update last block
 
             # Update transaction index/status
             for tx in self.miningJob.transactions:
-                tx.setBlockIndexRemarks(self.miningJob.index,"Mined in Block "+ str(self.miningJob.index))
+                tx.setBlockIndexRemarks(self.miningJob.index,"Mined in Block "+ str(self.miningJob.index)) ##??? ties to inProcessTransactionAlready
                 self.inProcessTransactions.remove(tx)
                 self.completedTransactions.append(tx)
 
-            
+            self.blocks.update({index: self.miningJob}) # Persist block to blocks
+            self.lastblock =  self.blocks[index]  # Update last block
 
             self.miningJob = None  # Clear up the job after persist to blocks
             self.createMiningJob() #Create mining job immediately after mining done.
