@@ -109,12 +109,33 @@ def receiveMinedBlock(): # minedBlock={'MinedBy':MinerIP,"Blockindex":miningDict
     accepted, msg = runningNode.Chain.verifyAndSubmitBlock(BlockIndex,MinedNonce, MinedBy)
     return {"accepted":accepted,"message":msg}
 
-@app.route("/blocks/<id>")
+@app.route("/block/latest")
+def getLatestBlock():
+    print("Retriving latest block info...")
+    lastblock = json.dumps(runningNode.Chain.lastblock, default=lambda o: o.__dict__,sort_keys=True, indent=4)
+    return lastblock
+
+@app.route("/block/all")
+def getAllBlocks():
+    print("Retriving all block transaction...")
+    allBlocksList=[{"Block "+str(key):dumpBlockToJson(runningNode.Chain.blocks[key])} for key in runningNode.Chain.blocks.keys()]
+    allBlocks = json.dumps([blk for blk in allBlocksList])
+    return allBlocks
+
+def dumpBlockToJson(block):
+    return json.dumps(block, default=lambda o: o.__dict__)
+
+@app.route("/block/latestBlockTransaction")
+def getLatestBlockTxs():
+    print("Retriving latest block transaction...")
+    latestBlockTxs = json.dumps([ob.__dict__ for ob in runningNode.Chain.lastblock.transactions])
+    return latestBlockTxs
+
+@app.route("/block/<id>")
 def getBlockWithID(id):
     print("Retriving Block info with Id:" + id)
     blockInfo = "Index:" + id
     return blockInfo
-
 
 @app.route("/transactions/pending")
 def getPendingTransaction():
