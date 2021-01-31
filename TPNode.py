@@ -18,11 +18,20 @@ def welcome():
            "<h2>Thank you for Starting a TP Node~</h1>"
 
 
-@app.route("/info")
+@app.route("/connectedNodeInfo")
 def returnNodeInfo():
     nodeInfo = {"NodeID": runningNode.NodeID,
                 "NodeURL": runningNode.SelfURL}
     return nodeInfo
+
+@app.route("/networkInfo")
+def returnNetworkInfo():
+    networkInfo = {"Difficulty": runningNode.Chain.Difficulty,
+                "TotalSupplyTPCoin": runningNode.Chain.TotalTPCoin,
+                "TPFoundationWalletAddress": runningNode.Chain.TPFoundationWalletAddress,
+                "TPFaucetWalletAddress": runningNode.Chain.FaucetAddress,
+                "TotalBlockNumber:": len(runningNode.Chain.blocks)}
+    return networkInfo
 
 
 @app.route("/debug")
@@ -226,7 +235,7 @@ if __name__ == "__main__":
         """
     #nodePort = random.randint(1000, 9999)
     nodePort = 1234
-    nodeID = "xxxx"+str(nodePort)
+    nodeID = "TPChainNode_"+str(nodePort)
     nodeURL= "127.0.0.1:"+str(nodePort);
     runningNode = Node(nodeID, nodeURL)
     app.run(port=nodePort)
