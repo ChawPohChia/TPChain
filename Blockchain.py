@@ -8,6 +8,7 @@ class Blockchain:
     def __init__(self):
         self.Difficulty = 3
         self.TotalTPCoin = 1000000
+        self.NetworkCoinBalance =  self.TotalTPCoin
         self.TPFoundationWalletAddress="1AzKmHdg6j8jPA8sNpxc2z7BMsKLCXRp6L"
         self.FaucetAddress = "1EmQd4rXvNEoWLKRNSdnb2GP9i5VQwuaEM"
 
@@ -29,9 +30,9 @@ class Blockchain:
         coinForFaucet = 100000 #(10%)
 
         #WIP: The followings Should implement transaction mechanism
-        self.TotalTPCoin -= coinForFaucet
+        self.NetworkCoinBalance  -= coinForFaucet
         self.balances["1EmQd4rXvNEoWLKRNSdnb2GP9i5VQwuaEM"]=coinForFaucet
-        self.TotalTPCoin -= coinForTPFoundation
+        self.NetworkCoinBalance  -= coinForTPFoundation
         self.balances["1AzKmHdg6j8jPA8sNpxc2z7BMsKLCXRp6L"]=coinForTPFoundation
 
 

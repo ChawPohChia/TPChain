@@ -26,11 +26,12 @@ def returnNodeInfo():
 
 @app.route("/networkInfo")
 def returnNetworkInfo():
-    networkInfo = {"Difficulty": runningNode.Chain.Difficulty,
-                "TotalSupplyTPCoin": runningNode.Chain.TotalTPCoin,
-                "TPFoundationWalletAddress": runningNode.Chain.TPFoundationWalletAddress,
-                "TPFaucetWalletAddress": runningNode.Chain.FaucetAddress,
-                "TotalBlockNumber:": len(runningNode.Chain.blocks)}
+    networkInfo = { "TotalBlockNumber:": len(runningNode.Chain.blocks),
+                   "Difficulty": runningNode.Chain.Difficulty,
+                   "TPFoundationWalletAddress": runningNode.Chain.TPFoundationWalletAddress,
+                   "TPFaucetWalletAddress": runningNode.Chain.FaucetAddress,
+                   "TotalSupplyTPCoin": runningNode.Chain.TotalTPCoin,
+                   "TPCoinBalance:": runningNode.Chain.NetworkCoinBalance}
     return networkInfo
 
 
