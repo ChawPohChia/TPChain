@@ -1,6 +1,6 @@
 class Transaction:
     # Received transaction from wallet will be in the following format:
-    # Data: {"from": "1Asq3p1PdSW39sRWSceiPDP5uTmrYawESW", "to": "XxnoCyJMtY323Y7mG6ePWtAmCoTH7KGqxX", "value": 100000,
+    # data: {"from": "1Asq3p1PdSW39sRWSceiPDP5uTmrYawESW", "to": "XxnoCyJMtY323Y7mG6ePWtAmCoTH7KGqxX", "value": 100000,
     #       "fee": 100, "dateCreated": "2020-12-1 16:4:38"}
     # SenderPubKey: This is sender PubKey
     # TransactionDataHash: �`���o�B�_Q��:-_J�g q > J�7�Gh"

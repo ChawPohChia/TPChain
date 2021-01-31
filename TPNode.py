@@ -17,7 +17,6 @@ def welcome():
     return "<h1>Welcome to TP Chain！！" \
            "<h2>Thank you for Starting a TP Node~</h1>"
 
-
 @app.route("/connectedNodeInfo")
 def returnNodeInfo():
     nodeInfo = {"NodeID": runningNode.NodeID,
@@ -193,31 +192,22 @@ def receiveTransaction():
     data = json.loads(tx['data'])
     receivedTransaction= Transaction(data, tx['senderPubKey'], tx['transactionDataHash'], tx['senderSignature'])
     runningNode.Chain.addTransaction(receivedTransaction)
-    #print("Data: " + tx['data'])
-    #print("SenderPubKey: "   + tx['senderPubKey'])
-    #print("TransactionDataHash: "+ str(tx['transactionDataHash']))
-    #print("SenderSignature: " + str(tx['senderSignature']))
     print(receivedTransaction)
     return "200"
 
-
-@app.route("/balances")
-def getBalances():
-    balancesInfo = "Balances:"
-    return balancesInfo
-
-
 @app.route("/address/<address>/transactions")
 def getAddressTransactions(address):
-    transInfo = "Transactions for address:" + address
-    return transInfo
-
+    (numberofTransactions, transactions)=runningNode.Chain.checkAccountTransactions(address);
+    if(numberofTransactions<=0):
+        return {"numberofTransactions": numberofTransactions, "Transactions": transactions}
+    else:
+        relevantTransactionsJson = json.dumps([tx.__dict__ for tx in transactions])
+        return {"numberofTransactions":numberofTransactions,"Transactions":relevantTransactionsJson}
 
 @app.route("/address/<address>/balance")
 def getAddressBalance(address):
-    balanceInfo = "Balance for address:" + address
-    return balanceInfo
-
+    (balance, msg) = runningNode.Chain.checkAccountBalance(address);
+    return {"balance": balance, "message": msg}
 
 @app.route("/peers")
 def getPeers():

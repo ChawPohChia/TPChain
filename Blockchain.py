@@ -35,7 +35,36 @@ class Blockchain:
         self.NetworkCoinBalance  -= coinForTPFoundation
         self.balances["1AzKmHdg6j8jPA8sNpxc2z7BMsKLCXRp6L"]=coinForTPFoundation
 
+        ## For testing purpose
+        #self.balances["XxnoCyJMtY323Y7mG6ePWtAmCoTH7KGqxX"] = coinForTPFoundation
+    
+    def checkAccountBalance(self, address):
+        if address not in self.balances.keys():
+            return (-1,"Account not in the network")
+        else: 
+            return (self.balances[address],"Retrieve Account balance successfully")
 
+    def checkAccountTransactions(self, address):
+        if address not in self.balances.keys():
+            return (-1,"Account not in the network")
+        else:
+            relevantTransactions = self.checkCollectionsForTransaction(address)
+            if (len(relevantTransactions)==0):
+                return(0,"There is no relevant transactions found.")
+            else:
+                return (len(relevantTransactions),relevantTransactions)
+        
+    def checkCollectionsForTransaction(self, address):
+        collectionsToCheck=[self.rejectedTransactions,self.completedTransactions,self.inProcessTransactions, self.pendingTransactions]
+        addressTransactions=[]
+        for collection in collectionsToCheck:
+            for tx in collection:
+                if (tx.data["from"]==address or tx.data["to"]==address):
+                    addressTransactions.append(tx);
+        return addressTransactions;
+        
+        
+            
     def addTransaction(self, transaction):
         txVerified = self.verifyTransaction(transaction)
         if(txVerified):
@@ -50,8 +79,13 @@ class Blockchain:
         #       "value": 100000,
         #       "fee": 100, "dateCreated": "2020-12-1 16:4:38"}
         if (transaction.data["from"] not in self.balances.keys()):
-            transaction.setBlockIndexRemarks(-3,"Account is not found!")
+            transaction.setBlockIndexRemarks(-3,"Sender account is not found!")
             return False;
+
+        if (transaction.data["to"] not in self.balances.keys()):
+            transaction.setBlockIndexRemarks(-3, "Recipient account is not found!")
+            return False;
+
         if(self.balances[transaction.data["from"]]<int(transaction.data["value"])):
             transaction.setBlockIndexRemarks(-3,"Insufficient fund")
             return False;
@@ -126,6 +160,10 @@ class Blockchain:
             # Update transaction index/status
             for tx in self.miningJob.transactions:
                 tx.setBlockIndexRemarks(self.miningJob.index,"Mined in Block "+ str(self.miningJob.index)) ##??? ties to inProcessTransactionAlready
+
+                self.balances[tx.data["from"]] -= int(tx.data["value"])
+                self.balances[tx.data["to"]] += int(tx.data["value"])
+
                 self.inProcessTransactions.remove(tx)
                 self.completedTransactions.append(tx)
 
