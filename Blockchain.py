@@ -11,6 +11,11 @@ class Blockchain:
         self.NetworkCoinBalance =  self.TotalTPCoin
         self.TPFoundationWalletAddress="1AzKmHdg6j8jPA8sNpxc2z7BMsKLCXRp6L"
         self.FaucetAddress = "1EmQd4rXvNEoWLKRNSdnb2GP9i5VQwuaEM"
+        self.FaucetRequestAmount=10
+
+        self.faucetRequestRecords = {}
+            #"abcabc": ["2021-01-31 16:14:39", "2021-02-01 23:4:39", "2021-02-03 16:4:37", "2021-02-04 03:14:38",
+            #           "2021-3-31 16:14:39"], "cdecde": ["2020-12-4 16:4:38", "2020-12-5 16:4:38"]}
 
         self.blocks = {}
         self.lastblock=None
@@ -62,8 +67,6 @@ class Blockchain:
                 if (tx.data["from"]==address or tx.data["to"]==address):
                     addressTransactions.append(tx);
         return addressTransactions;
-        
-        
             
     def addTransaction(self, transaction):
         txVerified = self.verifyTransaction(transaction)
@@ -90,6 +93,17 @@ class Blockchain:
             transaction.setBlockIndexRemarks(-3,"Insufficient fund")
             return False;
         return True;
+
+    def checkFaucetRequestGreediness(self,addressSendTo,currentRequestDatetime):
+        if addressSendTo not in self.faucetRequestRecords.keys():
+            return False; #No request history found so is not greedy
+
+        for record in self.faucetRequestRecords[addressSendTo]:
+            historyRecord = dt.strptime(record, "%Y-%m-%d %H:%M:%S")
+            currentRequest = dt.strptime(currentRequestDatetime, "%Y-%m-%d %H:%M:%S")
+            if((currentRequest - historyRecord).days <1): #Return true if any history found with creation within 1 day
+                return True;
+        return False;
 
     def generateGenesisBlock(self):
         self.blocks = {} #Clear all blocks while regenerate genesis block

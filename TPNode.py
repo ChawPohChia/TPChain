@@ -8,6 +8,7 @@ from http import HTTPStatus
 from Transaction import Transaction
 from flask import jsonify
 import json
+from datetime import datetime as dt
 
 app = Flask(__name__)
 CORS(app)
@@ -190,10 +191,40 @@ def receiveTransaction():
     # DER encoding of an ECDSA signature: 70 bytes insides
 
     data = json.loads(tx['data'])
+    #WIP: Need to verify received transaction here..
     receivedTransaction= Transaction(data, tx['senderPubKey'], tx['transactionDataHash'], tx['senderSignature'])
     runningNode.Chain.addTransaction(receivedTransaction)
     print(receivedTransaction)
     return "200"
+
+@app.route("/faucet/request", methods=['POST'])
+@cross_origin()
+def requestCoin():
+    tx = request.form
+    #Data: {"from": "1Asq3p1PdSW39sRWSceiPDP5uTmrYawESW", "to": "XxnoCyJMtY323Y7mG6ePWtAmCoTH7KGqxX", "value": 100000,
+    #       "fee": 100, "dateCreated": "2020-12-1 16:4:38"}
+    data = json.loads(tx['data'])
+    currentRequestDateTime = dt.now().strftime("%Y-%m-%d %H:%M:%S")
+    #GreedinessChecking
+    isGreedy=runningNode.Chain.checkFaucetRequestGreediness(data["to"],currentRequestDateTime)
+    if(isGreedy):
+        return {"accepted":False,"message":"Your last request for this account is less than 24 hours."}
+    
+    ##Network itself to complete faucet transaction info
+    data["from"] = runningNode.Chain.FaucetAddress
+    data["value"] = runningNode.Chain.FaucetRequestAmount
+    data["fee"] = 0
+    data["dateCreated"]=currentRequestDateTime
+
+    coinRequestTransaction= Transaction(data, "","","");
+    #Verify transaction
+    isVerifiedSuccesfully= runningNode.Chain.verifyTransaction(coinRequestTransaction);
+    if(not isVerifiedSuccesfully):
+        return {"accepted":False,"message":coinRequestTransaction.remarks}
+
+    runningNode.Chain.addTransaction(coinRequestTransaction)
+    ##WIP: when request is mined, need to add in the historical request record.
+    return  {"accepted":True,"message":"Your request is accepted and is in mining process."}
 
 @app.route("/address/<address>/transactions")
 def getAddressTransactions(address):
