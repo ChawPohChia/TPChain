@@ -16,7 +16,22 @@ for date in requestRecords["abcabc"]:
 
 #requestRecords["abcabc"].append("2020-12-5 16:4:38")
 
+faucetRequestRecords = {}
+# "abcabc": ["2021-01-31 16:14:39", "2021-02-01 23:4:39", "2021-02-03 16:4:37", "2021-02-04 03:14:38",
+#           "2021-3-31 16:14:39"], "cdecde": ["2020-12-4 16:4:38", "2020-12-5 16:4:38"]}
 
+fromAcc = "1EmQd4rXvNEoWLKRNSdnb2GP9i5VQwuaEM"
+date = "2021-01-31 16:14:39"
+
+
+if(fromAcc not in faucetRequestRecords):
+    faucetRequestRecords[fromAcc]=[date]
+else:
+    faucetRequestRecords[fromAcc].append(date)
+
+faucetRequestRecords[fromAcc].append("2021-3-31 16:14:39")
+print(faucetRequestRecords[fromAcc])
+    
 #for date in requestRecords["abcabc"]:
 #    print(date)
 
