@@ -2,6 +2,7 @@ from Block import Block
 import copy
 from hashlib import sha256
 from TPChainUtilities import getBlockHash, verifyBlockHash, strToDatetime
+from datetime import datetime as dt
 
 class Blockchain:
 
@@ -178,6 +179,14 @@ class Blockchain:
                 self.balances[tx.data["from"]] -= int(tx.data["value"])
                 self.balances[tx.data["to"]] += int(tx.data["value"])
 
+                ##Record Faucet success request for greeding checking
+                if(tx.data["from"] == self.FaucetAddress):
+                    if (tx.data["to"] not in self.faucetRequestRecords):
+                        self.faucetRequestRecords[tx.data["to"]] = [tx.data["dateCreated"]] #create a new collection as one of the dictionary element
+                else:
+                    self.faucetRequestRecords[tx.data["to"]].append(tx.data["dateCreated"])
+
+                #Adjust state of transactions
                 self.inProcessTransactions.remove(tx)
                 self.completedTransactions.append(tx)
 

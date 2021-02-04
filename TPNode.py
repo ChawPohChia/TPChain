@@ -208,7 +208,7 @@ def requestCoin():
     #GreedinessChecking
     isGreedy=runningNode.Chain.checkFaucetRequestGreediness(data["to"],currentRequestDateTime)
     if(isGreedy):
-        return {"accepted":False,"message":"Your last request for this account is less than 24 hours."}
+        return {"accepted":False,"message":"Your last request for this account is less than 24 hours.\nPlease try again later."}
     
     ##Network itself to complete faucet transaction info
     data["from"] = runningNode.Chain.FaucetAddress
