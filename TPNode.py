@@ -235,6 +235,14 @@ def getAddressTransactions(address):
         relevantTransactionsJson = json.dumps([tx.__dict__ for tx in transactions])
         return {"numberofTransactions":numberofTransactions,"Transactions":relevantTransactionsJson}
 
+@app.route("/address/<address>/add")
+def getAddressToAccount(address):
+    (addedSuccessfully, message)=runningNode.Chain.addAccount(address);
+    if(addedSuccessfully):
+        return {"accepted":True,"message":message}
+    else:
+        return {"accepted":False,"message":message}
+
 @app.route("/address/<address>/balance")
 def getAddressBalance(address):
     (balance, msg) = runningNode.Chain.checkAccountBalance(address);

@@ -41,9 +41,12 @@ class Blockchain:
         self.NetworkCoinBalance  -= coinForTPFoundation
         self.balances["1AzKmHdg6j8jPA8sNpxc2z7BMsKLCXRp6L"]=coinForTPFoundation
 
-        ## For testing purpose
-        #self.balances["XxnoCyJMtY323Y7mG6ePWtAmCoTH7KGqxX"] = coinForTPFoundation
-    
+    def addAccount(self, address):
+        if address in self.balances.keys():
+            return (False, "Wallet address already in the blockchain")
+        self.balances[address]=0;
+        return (True, "Wallet address has been added successfully")
+
     def checkAccountBalance(self, address):
         if address not in self.balances.keys():
             return (-1,"Account not in the network")
