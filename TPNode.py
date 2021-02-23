@@ -30,8 +30,10 @@ def returnNetworkInfo():
                    "Difficulty": runningNode.Chain.Difficulty,
                    "TPFoundationWalletAddress": runningNode.Chain.TPFoundationWalletAddress,
                    "TPFaucetWalletAddress": runningNode.Chain.FaucetAddress,
-                   "TotalSupplyTPCoin": runningNode.Chain.TotalTPCoin,
-                   "TPCoinBalance:": runningNode.Chain.NetworkCoinBalance}
+                   "TPFaucetWalletBalance": runningNode.Chain.balances[runningNode.Chain.FaucetAddress],
+                   "TPFoundationCoinBalance": runningNode.Chain.balances[runningNode.Chain.TPFoundationWalletAddress],
+                   "TPCoinBalance:": runningNode.Chain.NetworkCoinBalance,
+                   "TotalSupplyTPCoin": runningNode.Chain.TotalTPCoin,}
     return networkInfo
 
 @app.route("/debug/reset-chain")
@@ -138,7 +140,7 @@ def receiveTransaction():
     receivedTransaction= Transaction(data, tx['senderPubKey'], tx['transactionDataHash'], tx['senderSignature'])
     runningNode.Chain.addTransaction(receivedTransaction)
     print(receivedTransaction)
-    return "200"
+    return receivedTransaction.transactionID
 
 @app.route("/faucet/request", methods=['POST'])
 @cross_origin()
