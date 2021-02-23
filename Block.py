@@ -2,7 +2,6 @@ import time
 from hashlib import sha256
 import json
 
-
 class Block:
     #For miner program will only take in blockHash input.
     def __init__(self, index=None, transactions=None, prevBlockHash=None, difficulty=None):
