@@ -20,7 +20,7 @@ class Blockchain:
         self.miningJob = None
 
         self.rejectedTransactions = []  # Transaction with blockindex=-3
-        self.pendingTransactions=[]     #Transaction with blockindex=-2
+        self.pendingTransactions = []     #Transaction with blockindex=-2
         self.inProcessTransactions = []  #Transaction with blockindex=-1
         self.completedTransactions = [] #Transaction with blockindex>0
 
@@ -102,6 +102,8 @@ class Blockchain:
         for record in self.faucetRequestRecords[addressSendTo]:
             historyRecord = dt.strptime(record, "%Y-%m-%d %H:%M:%S")
             currentRequest = dt.strptime(currentRequestDatetime, "%Y-%m-%d %H:%M:%S")
+            if (currentRequest == historyRecord): # Because we persist request in prior, this line is to avoid compare the request itself
+                continue;
             if((currentRequest - historyRecord).days <1): #Return true if any history found with creation within 1 day
                 return True;
         return False;
@@ -175,16 +177,8 @@ class Blockchain:
             # Update transaction index/status
             for tx in self.miningJob.transactions:
                 tx.setBlockIndexRemarks(self.miningJob.index,"Mined in Block "+ str(self.miningJob.index)) ##??? ties to inProcessTransactionAlready
-
                 self.balances[tx.data["from"]] -= int(tx.data["value"])
                 self.balances[tx.data["to"]] += int(tx.data["value"])
-
-                ##Record Faucet success request for greeding checking
-                if(tx.data["from"] == self.FaucetAddress):
-                    if (tx.data["to"] not in self.faucetRequestRecords):
-                        self.faucetRequestRecords[tx.data["to"]] = [tx.data["dateCreated"]] #create a new collection as one of the dictionary element
-                else:
-                    self.faucetRequestRecords[tx.data["to"]].append(tx.data["dateCreated"])
 
                 #Adjust state of transactions
                 self.inProcessTransactions.remove(tx)

@@ -150,6 +150,13 @@ def requestCoin():
     #       "fee": 100, "dateCreated": "2020-12-1 16:4:38"}
     data = json.loads(tx['data'])
     currentRequestDateTime = dt.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    #Request Add into record for greediness check
+    if (data["to"] not in runningNode.Chain.faucetRequestRecords):
+        runningNode.Chain.faucetRequestRecords[data["to"]] = [currentRequestDateTime] #create a new collection as one of the dictionary element
+    else:
+        runningNode.Chain.faucetRequestRecords[data["to"]].append(currentRequestDateTime)
+
     #GreedinessChecking
     isGreedy=runningNode.Chain.checkFaucetRequestGreediness(data["to"],currentRequestDateTime)
     if(isGreedy):
