@@ -1,5 +1,7 @@
 from hashlib import sha256
 import datetime
+import string
+import random
 
 def getBlockHash(blockString, nonce):
     return sha256((blockString + str(nonce)).encode()).hexdigest()
@@ -13,3 +15,8 @@ def verifyBlockHash(blockString, nonce, difficulty):
 
 def strToDatetime(dateString):
     return datetime.datetime.strptime(dateString, '%Y-%m-%d %H:%M:%S')
+
+
+
+def id_generator(size=24, chars=string.ascii_uppercase + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
